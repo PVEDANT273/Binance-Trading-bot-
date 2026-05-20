@@ -29,7 +29,7 @@ class TestOrderManager:
         """Create OrderManager with mocked client"""
         return OrderManager(mock_client)
 
-    # ===== SUCCESSFUL MARKET ORDERS =====
+    #    Successfull MARKET ORDERS 
 
     def test_place_market_buy_order_success(self, manager, mock_client):
         """Test successful MARKET BUY order placement"""
@@ -84,7 +84,7 @@ class TestOrderManager:
         assert response["side"] == "SELL"
         assert response["executedQty"] == 0.5
 
-    # ===== SUCCESSFUL LIMIT ORDERS =====
+    #    Successfull LIMIT ORDERS 
 
     def test_place_limit_order_success(self, manager, mock_client):
         """Test successful LIMIT order placement"""
@@ -129,7 +129,7 @@ class TestOrderManager:
         # Verify no API call was made
         mock_client.post.assert_not_called()
 
-    # ===== SUCCESSFUL STOP_MARKET ORDERS =====
+    #   Successfull STOP_MARKET ORDERS
 
     def test_place_stop_market_order_success(self, manager, mock_client):
         """Test successful STOP_MARKET order placement"""
@@ -176,7 +176,7 @@ class TestOrderManager:
         # Verify no API call was made
         mock_client.post.assert_not_called()
 
-    # ===== VALIDATION ERRORS =====
+    #  VALIDATION ERRORS 
 
     def test_invalid_symbol_rejected(self, manager, mock_client):
         """Test that invalid symbol is rejected before API call"""
@@ -252,7 +252,7 @@ class TestOrderManager:
 
         mock_client.post.assert_not_called()
 
-    # ===== BINANCE API ERRORS =====
+    #  BINANCE API ERRORS 
 
     def test_binance_api_error_insufficient_margin(self, manager, mock_client):
         """Test handling of Binance API error: insufficient margin"""
@@ -300,7 +300,7 @@ class TestOrderManager:
                 stop_price=100000,  # Stop price higher than current price
             )
 
-    # ===== NETWORK ERRORS =====
+    #  NETWORK ERRORS 
 
     def test_network_timeout_during_order_placement(self, manager, mock_client):
         """Test handling of network timeout"""
@@ -340,7 +340,7 @@ class TestOrderManager:
                 quantity=0.001,
             )
 
-    # ===== RESPONSE PARSING =====
+    #  RESPONSE PARSING 
 
     def test_format_response_extracts_correct_fields(self, manager, mock_client):
         """Test that format_response extracts only the required fields"""
@@ -382,7 +382,7 @@ class TestOrderManager:
         assert "createTime" not in response
         assert "updateTime" not in response
 
-    # ===== EDGE CASES =====
+    #  EDGE CASES 
 
     def test_very_small_valid_quantity(self, manager, mock_client):
         """Test placing order with very small but valid quantity"""
@@ -459,7 +459,7 @@ class TestOrderManager:
 
         assert response["orderId"] == 666666666
 
-    # ===== LOGGING VERIFICATION =====
+    #  LOGGING VERIFICATION 
 
     def test_order_is_logged(self, manager, mock_client):
         """Test that order placement is logged"""

@@ -1,4 +1,3 @@
-# Python
 __pycache__/
 *.py[cod]
 *.pyo
@@ -9,27 +8,19 @@ dist/
 build/
 .eggs/
 
-# Virtual environments
-.venv/
-.env/
-
-# Environment / secrets — NEVER commit .env
+.venv
 .env
 
-# Logs (sample logs are committed; live log is not)
 logs/trading_bot.log
 logs/trading_bot.log.*
 
-# IDE
 .vscode/
 .idea/
 *.code-workspace
 
-# OS
 .DS_Store
 Thumbs.db
 
-# pytest / coverage
 .pytest_cache/
 .coverage
 htmlcov/

@@ -14,12 +14,12 @@ import math
 from decimal import Decimal, ROUND_DOWN
 from typing import Optional
 
-# ── Valid enumerations ──────────────────────────────────────────────────────
+#  Valid enumerations  
 VALID_SIDES = {"BUY", "SELL"}
 VALID_ORDER_TYPES = {"MARKET", "LIMIT", "STOP_MARKET"}
 
 
-# ── Helpers ─────────────────────────────────────────────────────────────────
+# Helpers  
 def _round_step(value: float, step: str) -> Decimal:
     """Round *value* down to the precision implied by *step* string (e.g. '0.001')."""
     step_dec = Decimal(step)
@@ -34,7 +34,7 @@ def _count_decimals(step: str) -> int:
     return 0
 
 
-# ── Public validators ────────────────────────────────────────────────────────
+#Public validators
 
 def validate_symbol(symbol: str) -> str:
     """
@@ -224,8 +224,7 @@ def validate_stop_price(
     return Decimal(str(stop_price))
 
 
-# ── Internal utility ─────────────────────────────────────────────────────────
-
+# Internal utility
 def _get_filter(symbol_info: dict, filter_type: str) -> Optional[dict]:
     """Extract a specific filter dict from symbol_info['filters']."""
     for f in symbol_info.get("filters", []):

@@ -16,7 +16,7 @@ from pathlib import Path
 
 from rich.logging import RichHandler
 
-# ── Constants ──────────────────────────────────────────────────────────────
+#    Constants          
 LOG_DIR = Path(__file__).resolve().parent.parent / "logs"
 LOG_FILE = LOG_DIR / "trading_bot.log"
 MAX_BYTES = 5 * 1024 * 1024   # 5 MB
@@ -42,7 +42,7 @@ def setup_logging(level: int = logging.DEBUG) -> None:
 
     root.setLevel(logging.DEBUG)
 
-    # ── File handler (DEBUG+, rotating) ────────────────────────────────────
+    #File handler (DEBUG+, rotating)                                     
     LOG_DIR.mkdir(parents=True, exist_ok=True)
     file_handler = RotatingFileHandler(
         LOG_FILE,
@@ -53,7 +53,7 @@ def setup_logging(level: int = logging.DEBUG) -> None:
     file_handler.setLevel(logging.DEBUG)
     file_handler.setFormatter(logging.Formatter(FILE_FORMAT, datefmt=DATE_FORMAT))
 
-    # ── Rich console handler (WARNING+) ────────────────────────────────────
+    # Rich console handler (WARNING+)                                     
     console_handler = RichHandler(
         level=logging.WARNING,
         rich_tracebacks=True,

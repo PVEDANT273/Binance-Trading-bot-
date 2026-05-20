@@ -1,0 +1,9 @@
+2026-05-19T12:00:01 | DEBUG    | bot.client | BinanceClient initialised | base_url=https://testnet.binancefuture.com
+2026-05-19T12:00:01 | DEBUG    | bot.client | GET /fapi/v1/exchangeInfo | params={}
+2026-05-19T12:00:01 | DEBUG    | bot.client | HTTP GET https://testnet.binancefuture.com/fapi/v1/exchangeInfo → 200 | body={"timezone":"UTC","serverTime":1699999999999,"rateLimits":
+2026-05-19T12:00:01 | DEBUG    | bot.client | exchange info fetched for BTCUSDT
+2026-05-19T12:00:01 | INFO     | bot.orders | Order request | symbol=BTCUSDT side=BUY type=MARKET qty=0.001 price=None stopPrice=None dry_run=False
+2026-05-19T12:00:01 | DEBUG    | bot.client | POST /fapi/v1/order | data={'symbol': 'BTCUSDT', 'side': 'BUY', 'type': 'MARKET', 'quantity': '0.001', 'timestamp': 1699999999999}
+2026-05-19T12:00:02 | DEBUG    | bot.client | HTTP POST https://testnet.binancefuture.com/fapi/v1/order → 200 | body={"orderId":3427651982,"symbol":"BTCUSDT","status":"FILLED","clientOrderId":"x-xcPaGWEU-001","price":"0","avgPrice":"67423.50","origQty":"0.001","executedQty":"0.001","cumQty":"0.001","cumQuote":"67.42","timeInForce":"GTC","type":"MARKET","reduceOnly":false,"closePosition":false,"side":"BUY","positionSide":"BOTH","stopPrice":"0","workingType":"CONTRACT_PRICE","priceProtect":false,"origType":"MARKET","updateTime":1699999999999}
+2026-05-19T12:00:02 | INFO     | bot.orders | Order response | {'orderId': 3427651982, 'symbol': 'BTCUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcPaGWEU-001', 'price': '0', 'avgPrice': '67423.50', 'origQty': '0.001', 'executedQty': '0.001', 'cumQty': '0.001', 'cumQuote': '67.42', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'BUY', 'positionSide': 'BOTH', 'stopPrice': '0', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'updateTime': 1699999999999}
+2026-05-19T12:00:02 | INFO     | cli | Order placed successfully. orderId=3427651982

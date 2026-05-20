@@ -45,8 +45,7 @@ class OrderManager:
         self._client = client
         self._dry_run = dry_run
 
-    # ── Public API ────────────────────────────────────────────────────────────
-
+    #Public API        
     def place_order(
         self,
         symbol: str,
@@ -69,7 +68,7 @@ class OrderManager:
         NetworkError
             On connectivity problems.
         """
-        # ── 1. Validate & normalise inputs ────────────────────────────────
+        #Validate & normalise inputs                                 
         symbol = validate_symbol(symbol)
         side = validate_side(side)
         order_type = validate_order_type(order_type)
@@ -89,7 +88,7 @@ class OrderManager:
         price_dec: Optional[Decimal] = validate_price(price, order_type, symbol_info)
         stop_dec: Optional[Decimal] = validate_stop_price(stop_price, order_type, symbol_info)
 
-        # ── 2. Build payload ──────────────────────────────────────────────
+        #Build payload                                               
         payload: dict = {
             "symbol": symbol,
             "side": side,
@@ -109,7 +108,7 @@ class OrderManager:
             symbol, side, order_type, qty_dec, price_dec, stop_dec, self._dry_run,
         )
 
-        # ── 3. Dry-run short-circuit ──────────────────────────────────────
+        #Dry-run short-circuit                                       
         if self._dry_run:
             log.info("DRY RUN — order not sent. Payload: %s", payload)
             return {
@@ -121,7 +120,7 @@ class OrderManager:
                 "avgPrice": "0",
             }
 
-        # ── 4. Send order ────────────────────────────────────────────────
+        #Send order                                                 
         try:
             raw = self._client.post(ORDER_ENDPOINT, data=payload)
         except BinanceAPIError:
@@ -134,8 +133,7 @@ class OrderManager:
         log.info("Order response | %s", raw)
         return self._normalise(raw)
 
-    # ── Internal helpers ──────────────────────────────────────────────────────
-
+    #Internal helpers  
     @staticmethod
     def _normalise(raw: dict) -> dict:
         """

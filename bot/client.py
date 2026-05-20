@@ -29,7 +29,7 @@ load_dotenv()
 
 log = get_logger(__name__)
 
-# ── Custom exceptions ────────────────────────────────────────────────────────
+#    Custom exceptions    
 
 class BinanceAPIError(Exception):
     """Raised when the Binance API returns a non-2xx response or error code."""
@@ -44,7 +44,7 @@ class NetworkError(Exception):
     """Raised on connection timeouts or DNS failures."""
 
 
-# ── Client ───────────────────────────────────────────────────────────────────
+# Client   
 
 class BinanceClient:
     """
@@ -90,7 +90,7 @@ class BinanceClient:
 
         log.debug("BinanceClient initialised | base_url=%s", self._base_url)
 
-    # ── Signing ──────────────────────────────────────────────────────────────
+    # Signing          
 
     def _sign(self, params: dict) -> dict:
         """Add timestamp + HMAC-SHA256 signature to *params* dict (in-place + return)."""
@@ -104,7 +104,7 @@ class BinanceClient:
         params["signature"] = signature
         return params
 
-    # ── Low-level HTTP helpers ────────────────────────────────────────────────
+    #  Low-level HTTP helpers                                                 
 
     def _handle_response(self, response: httpx.Response) -> Any:
         """Parse JSON and raise BinanceAPIError on non-2xx or API error body."""
@@ -158,7 +158,7 @@ class BinanceClient:
             raise NetworkError(f"Network error: {exc}") from exc
         return self._handle_response(resp)
 
-    # ── Convenience endpoints ─────────────────────────────────────────────────
+    #  Convenience endpoints                                                 ─
 
     def ping(self) -> bool:
         """Return True if the exchange is reachable."""
@@ -187,6 +187,10 @@ class BinanceClient:
                 log.debug("exchange info fetched for %s", symbol)
                 return s
         raise BinanceAPIError(-1, f"Symbol '{symbol}' not found on Binance Futures Testnet.")
+
+    def get_account_info(self):
+        return self.get("/fapi/v2/account")
+
 
     def close(self) -> None:
         """Close the underlying httpx session."""

@@ -32,11 +32,11 @@ from bot.client import BinanceClient, BinanceAPIError, NetworkError
 from bot.orders import OrderManager
 from bot.validators import VALID_SIDES, VALID_ORDER_TYPES
 
-# ── Bootstrap logging before anything else ───────────────────────────────────
+# Logging
 setup_logging()
 log = get_logger(__name__)
 
-# ── Typer app ─────────────────────────────────────────────────────────────────
+# Typer
 app = typer.Typer(
     name="trading-bot",
     help="[bold cyan]Binance Futures Testnet[/bold cyan] — simple order placer",
@@ -46,8 +46,7 @@ app = typer.Typer(
 )
 console = Console()
 
-# ── Shared display helpers ────────────────────────────────────────────────────
-
+# Helpers
 def _print_request_summary(
     symbol: str,
     side: str,
@@ -169,8 +168,7 @@ def _run_order(
         log.info("Order placed successfully. orderId=%s", result.get("orderId"))
 
 
-# ── Commands ──────────────────────────────────────────────────────────────────
-
+# Commands
 @app.command("place-order")
 def place_order(
     symbol: str = typer.Option(
@@ -245,7 +243,7 @@ def interactive() -> None:
     console.rule("[bold cyan]🤖 Binance Futures Testnet — Interactive Order Placer[/bold cyan]")
     console.print()
 
-    # ── Symbol ────────────────────────────────────────────────────────────
+    # Symbol 
     while True:
         symbol = Prompt.ask(
             "[bold]Symbol[/bold] (e.g. BTCUSDT, ETHUSDT)",
@@ -255,7 +253,7 @@ def interactive() -> None:
             break
         console.print("[red]  ✗ Symbol must end with USDT (e.g. BTCUSDT).[/red]")
 
-    # ── Side ──────────────────────────────────────────────────────────────
+    # Side
     while True:
         side = Prompt.ask(
             "[bold]Side[/bold]",
@@ -265,7 +263,7 @@ def interactive() -> None:
         if side in VALID_SIDES:
             break
 
-    # ── Order type ────────────────────────────────────────────────────────
+    # Order type 
     console.print()
     console.print("[bold]Order types available:[/bold]")
     console.print("  [cyan]1[/cyan] — MARKET       (execute immediately at best price)")
@@ -283,7 +281,7 @@ def interactive() -> None:
         order_type = type_map[choice]
         break
 
-    # ── Quantity ──────────────────────────────────────────────────────────
+    # Quantity
     while True:
         try:
             qty = float(Prompt.ask("[bold]Quantity[/bold] (base asset, e.g. 0.001)"))
@@ -293,7 +291,7 @@ def interactive() -> None:
         except ValueError:
             console.print("[red]  ✗ Please enter a valid number.[/red]")
 
-    # ── Price (LIMIT only) ────────────────────────────────────────────────
+    # Price (LIMIT only) 
     price: Optional[float] = None
     if order_type == "LIMIT":
         while True:
@@ -305,7 +303,7 @@ def interactive() -> None:
             except ValueError:
                 console.print("[red]  ✗ Please enter a valid number.[/red]")
 
-    # ── Stop price (STOP_MARKET only) ─────────────────────────────────────
+    # Stop price (STOP_MARKET only) 
     stop_price: Optional[float] = None
     if order_type == "STOP_MARKET":
         while True:
@@ -317,7 +315,7 @@ def interactive() -> None:
             except ValueError:
                 console.print("[red]  ✗ Please enter a valid number.[/red]")
 
-    # ── Dry-run option ────────────────────────────────────────────────────
+    # dry-run
     dry_run = Confirm.ask(
         "\n[yellow]Dry run?[/yellow] (preview without sending to exchange)",
         default=False,
@@ -325,7 +323,7 @@ def interactive() -> None:
 
     console.print()
 
-    # ── Confirmation table ────────────────────────────────────────────────
+    # Confirmation table
     _print_request_summary(symbol, side, order_type, qty, price, stop_price, dry_run)
 
     confirmed = Confirm.ask(
@@ -349,8 +347,6 @@ def interactive() -> None:
         dry_run=dry_run,
     )
 
-
-# ── Entry point ───────────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
     app()

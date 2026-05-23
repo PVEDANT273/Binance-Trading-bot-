@@ -1,13 +1,3 @@
-"""
-bot/orders.py
-~~~~~~~~~~~~~
-Order placement business logic for Binance Futures USDT-M Testnet.
-
-This module sits between the CLI layer and the raw HTTP client.
-It validates inputs (using validators.py), builds the correct API
-payload, calls the client, and returns a clean normalised response.
-"""
-
 from __future__ import annotations
 
 from decimal import Decimal
@@ -30,7 +20,7 @@ ORDER_ENDPOINT = "/fapi/v1/order"
 
 
 class OrderManager:
-    """
+    
     High-level interface for placing Binance Futures orders.
 
     Parameters
@@ -39,7 +29,7 @@ class OrderManager:
         Authenticated REST client instance.
     dry_run : bool
         If True, validate everything but do NOT send the order.
-    """
+    
 
     def __init__(self, client: BinanceClient, dry_run: bool = False) -> None:
         self._client = client
@@ -55,7 +45,7 @@ class OrderManager:
         price: Optional[float] = None,
         stop_price: Optional[float] = None,
     ) -> dict:
-        """
+        
         Validate inputs, build the payload, place the order and return a
         normalised response dict.
 
@@ -67,7 +57,7 @@ class OrderManager:
             On exchange-level rejection.
         NetworkError
             On connectivity problems.
-        """
+        
         #Validate & normalise inputs                                 
         symbol = validate_symbol(symbol)
         side = validate_side(side)
@@ -136,12 +126,12 @@ class OrderManager:
     #Internal helpers  
     @staticmethod
     def _normalise(raw: dict) -> dict:
-        """
+        
         Extract and return the key fields from the raw Binance response.
 
         Always returns the same keys regardless of order type so callers
         don't need to branch on response shape.
-        """
+        
         return {
             "orderId":     raw.get("orderId"),
             "symbol":      raw.get("symbol"),

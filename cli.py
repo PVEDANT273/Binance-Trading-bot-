@@ -1,4 +1,4 @@
-"""
+
 cli.py
 ~~~~~~
 Typer-powered CLI entry point for the Binance Futures Testnet Trading Bot.
@@ -11,7 +11,7 @@ Usage:
   python cli.py --help
   python cli.py place-order --symbol BTCUSDT --side BUY --type MARKET --qty 0.001
   python cli.py interactive
-"""
+
 
 from __future__ import annotations
 
@@ -56,7 +56,7 @@ def _print_request_summary(
     stop_price: Optional[float],
     dry_run: bool,
 ) -> None:
-    """Print a rich panel summarising the order about to be placed."""
+    Print a rich panel summarising the order about to be placed.
     side_color = "green" if side.upper() == "BUY" else "red"
     t = Table(box=box.SIMPLE, show_header=False, padding=(0, 1))
     t.add_column("Field", style="bold dim", no_wrap=True)
@@ -79,7 +79,7 @@ def _print_request_summary(
 
 
 def _print_response(result: dict) -> None:
-    """Print a rich panel with the exchange response."""
+    Print a rich panel with the exchange response.
     if result.get("dry_run"):
         console.print(
             Panel(
@@ -124,7 +124,7 @@ def _run_order(
     stop_price: Optional[float],
     dry_run: bool,
 ) -> None:
-    """Common execution path for both CLI commands."""
+    Common execution path for both CLI commands.
     _print_request_summary(symbol, side, order_type, qty, price, stop_price, dry_run)
 
     try:
@@ -205,7 +205,7 @@ def place_order(
         is_flag=True,
     ),
 ) -> None:
-    """
+    
     Place a [bold]single order[/bold] on Binance Futures Testnet via command-line flags.
 
     Examples:
@@ -221,7 +221,7 @@ def place_order(
 
       [dim]# Dry run (no order sent)[/dim]
       python cli.py place-order --symbol BTCUSDT --side BUY --type MARKET --qty 0.001 --dry-run
-    """
+    
     _run_order(
         symbol=symbol.upper(),
         side=side.upper(),
@@ -235,11 +235,11 @@ def place_order(
 
 @app.command("interactive")
 def interactive() -> None:
-    """
+    
     Launch [bold cyan]guided interactive mode[/bold cyan] — step-by-step prompts with validation.
 
     Great for exploring the bot without memorising flags.
-    """
+    
     console.rule("[bold cyan]🤖 Binance Futures Testnet — Interactive Order Placer[/bold cyan]")
     console.print()
 

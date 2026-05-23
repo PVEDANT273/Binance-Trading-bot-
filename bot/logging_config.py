@@ -1,14 +1,3 @@
-"""
-bot/logging_config.py
-~~~~~~~~~~~~~~~~~~~~~
-Centralised logging setup for the trading bot.
-
-Features:
-  - Rotating file handler  → logs/trading_bot.log (5 MB × 3 backups)
-  - Rich console handler   → WARNING+ only, colour-coded via `rich`
-  - One shared formatter   → timestamp | level | module | message
-"""
-
 import logging
 import os
 from logging.handlers import RotatingFileHandler
@@ -28,12 +17,12 @@ DATE_FORMAT = "%Y-%m-%dT%H:%M:%S"
 
 
 def setup_logging(level: int = logging.DEBUG) -> None:
-    """
+    
     Configure the root logger once at application startup.
 
     Call this exactly once from cli.py before any other imports trigger
     logging. Subsequent calls are idempotent (handlers are not duplicated).
-    """
+    
     root = logging.getLogger()
 
     # Idempotency guard
@@ -66,5 +55,5 @@ def setup_logging(level: int = logging.DEBUG) -> None:
 
 
 def get_logger(name: str) -> logging.Logger:
-    """Return a named logger. Always call setup_logging() first."""
+    Return a named logger. Always call setup_logging() first.
     return logging.getLogger(name)

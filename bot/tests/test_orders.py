@@ -5,11 +5,11 @@ from bot.client import BinanceAPIError, NetworkError
 
 
 class TestOrderManager:
-    """Test suite for OrderManager class"""
+    #Test suite for OrderManager class
 
     @pytest.fixture
     def mock_client(self):
-        """Create a mocked BinanceClient"""
+        Create a mocked BinanceClient
         client = Mock()
         client.get_exchange_info = Mock(
             return_value={
@@ -26,13 +26,13 @@ class TestOrderManager:
 
     @pytest.fixture
     def manager(self, mock_client):
-        """Create OrderManager with mocked client"""
+        Create OrderManager with mocked client
         return OrderManager(mock_client)
 
     #    Successfull MARKET ORDERS 
 
     def test_place_market_buy_order_success(self, manager, mock_client):
-        """Test successful MARKET BUY order placement"""
+        #Test successful MARKET BUY order placement
         mock_client.post.return_value = {
             "orderId": 123456789,
             "symbol": "BTCUSDT",
@@ -62,7 +62,7 @@ class TestOrderManager:
         assert "/fapi/v1/order" in call_args[0][0]
 
     def test_place_market_sell_order_success(self, manager, mock_client):
-        """Test successful MARKET SELL order placement"""
+        #Test successful MARKET SELL order placement
         mock_client.post.return_value = {
             "orderId": 987654321,
             "symbol": "ETHUSDT",
@@ -87,7 +87,7 @@ class TestOrderManager:
     #    Successfull LIMIT ORDERS 
 
     def test_place_limit_order_success(self, manager, mock_client):
-        """Test successful LIMIT order placement"""
+        #Test successful LIMIT order placement
         mock_client.post.return_value = {
             "orderId": 111111111,
             "symbol": "BTCUSDT",
@@ -116,7 +116,7 @@ class TestOrderManager:
         assert call_args[0][1]["price"] == 60000.00
 
     def test_place_limit_order_without_price_fails(self, manager, mock_client):
-        """Test that LIMIT order without price is rejected"""
+        #Test that LIMIT order without price is rejected
         with pytest.raises(ValueError, match="required for LIMIT"):
             manager.place_order(
                 symbol="BTCUSDT",
@@ -132,7 +132,7 @@ class TestOrderManager:
     #   Successfull STOP_MARKET ORDERS
 
     def test_place_stop_market_order_success(self, manager, mock_client):
-        """Test successful STOP_MARKET order placement"""
+        #Test successful STOP_MARKET order placement
         mock_client.post.return_value = {
             "orderId": 222222222,
             "symbol": "BTCUSDT",
@@ -163,7 +163,7 @@ class TestOrderManager:
     def test_place_stop_market_order_without_stop_price_fails(
         self, manager, mock_client
     ):
-        """Test that STOP_MARKET order without stop_price is rejected"""
+        #Test that STOP_MARKET order without stop_price is rejected
         with pytest.raises(ValueError, match="required for STOP_MARKET"):
             manager.place_order(
                 symbol="BTCUSDT",
@@ -179,7 +179,7 @@ class TestOrderManager:
     #  VALIDATION ERRORS 
 
     def test_invalid_symbol_rejected(self, manager, mock_client):
-        """Test that invalid symbol is rejected before API call"""
+        #Test that invalid symbol is rejected before API call
         with pytest.raises(ValueError):
             manager.place_order(
                 symbol="INVALID",  # Doesn't end in USDT
@@ -192,7 +192,7 @@ class TestOrderManager:
         mock_client.post.assert_not_called()
 
     def test_invalid_side_rejected(self, manager, mock_client):
-        """Test that invalid side is rejected before API call"""
+        #Test that invalid side is rejected before API call
         with pytest.raises(ValueError):
             manager.place_order(
                 symbol="BTCUSDT",
@@ -204,7 +204,7 @@ class TestOrderManager:
         mock_client.post.assert_not_called()
 
     def test_invalid_order_type_rejected(self, manager, mock_client):
-        """Test that invalid order type is rejected before API call"""
+        #Test that invalid order type is rejected before API call
         with pytest.raises(ValueError):
             manager.place_order(
                 symbol="BTCUSDT",
@@ -216,7 +216,7 @@ class TestOrderManager:
         mock_client.post.assert_not_called()
 
     def test_quantity_below_minimum_rejected(self, manager, mock_client):
-        """Test that quantity below minimum is rejected before API call"""
+        #Test that quantity below minimum is rejected before API call
         with pytest.raises(ValueError, match="minimum"):
             manager.place_order(
                 symbol="BTCUSDT",
@@ -228,7 +228,7 @@ class TestOrderManager:
         mock_client.post.assert_not_called()
 
     def test_negative_quantity_rejected(self, manager, mock_client):
-        """Test that negative quantity is rejected"""
+        #Test that negative quantity is rejected
         with pytest.raises(ValueError, match="positive"):
             manager.place_order(
                 symbol="BTCUSDT",
@@ -240,7 +240,7 @@ class TestOrderManager:
         mock_client.post.assert_not_called()
 
     def test_price_below_minimum_rejected(self, manager, mock_client):
-        """Test that price below minimum is rejected before API call"""
+        #Test that price below minimum is rejected before API call
         with pytest.raises(ValueError, match="minimum"):
             manager.place_order(
                 symbol="BTCUSDT",
@@ -255,7 +255,7 @@ class TestOrderManager:
     #  BINANCE API ERRORS 
 
     def test_binance_api_error_insufficient_margin(self, manager, mock_client):
-        """Test handling of Binance API error: insufficient margin"""
+        #Test handling of Binance API error: insufficient margin
         mock_client.post.side_effect = BinanceAPIError(
             code=-2019, message="Margin is insufficient"
         )
@@ -269,7 +269,7 @@ class TestOrderManager:
             )
 
     def test_binance_api_error_invalid_symbol(self, manager, mock_client):
-        """Test handling of Binance API error: invalid symbol"""
+        #Test handling of Binance API error: invalid symbol
         # Reset mock for this test
         mock_client.get_exchange_info.side_effect = BinanceAPIError(
             code=-1013, message="Invalid symbol"
@@ -286,7 +286,7 @@ class TestOrderManager:
     def test_binance_api_error_order_would_trigger_immediately(
         self, manager, mock_client
     ):
-        """Test handling of Binance API error: order would trigger immediately"""
+        #Test handling of Binance API error: order would trigger immediately
         mock_client.post.side_effect = BinanceAPIError(
             code=-2010, message="Order would trigger immediately"
         )
@@ -303,7 +303,7 @@ class TestOrderManager:
     #  NETWORK ERRORS 
 
     def test_network_timeout_during_order_placement(self, manager, mock_client):
-        """Test handling of network timeout"""
+        #Test handling of network timeout
         mock_client.post.side_effect = NetworkError("Connection timeout")
 
         with pytest.raises(NetworkError):
@@ -315,7 +315,7 @@ class TestOrderManager:
             )
 
     def test_network_error_during_exchange_info_fetch(self, manager, mock_client):
-        """Test handling of network error when fetching exchange info"""
+        #Test handling of network error when fetching exchange info
         mock_client.get_exchange_info.side_effect = NetworkError(
             "Failed to connect"
         )
@@ -329,7 +329,7 @@ class TestOrderManager:
             )
 
     def test_connection_refused(self, manager, mock_client):
-        """Test handling of connection refused"""
+        #Test handling of connection refused
         mock_client.post.side_effect = NetworkError("Connection refused")
 
         with pytest.raises(NetworkError):
@@ -343,7 +343,7 @@ class TestOrderManager:
     #  RESPONSE PARSING 
 
     def test_format_response_extracts_correct_fields(self, manager, mock_client):
-        """Test that format_response extracts only the required fields"""
+        #Test that format_response extracts only the required fields
         raw_response = {
             "orderId": 123456789,
             "clientOrderId": "web_abc123",
@@ -385,7 +385,7 @@ class TestOrderManager:
     #  EDGE CASES 
 
     def test_very_small_valid_quantity(self, manager, mock_client):
-        """Test placing order with very small but valid quantity"""
+        #Test placing order with very small but valid quantity
         mock_client.post.return_value = {
             "orderId": 333333333,
             "status": "FILLED",
@@ -403,7 +403,7 @@ class TestOrderManager:
         assert response["executedQty"] == 0.0001
 
     def test_large_valid_quantity(self, manager, mock_client):
-        """Test placing order with large but valid quantity"""
+        #Test placing order with large but valid quantity
         mock_client.post.return_value = {
             "orderId": 444444444,
             "status": "FILLED",
@@ -421,7 +421,7 @@ class TestOrderManager:
         assert response["executedQty"] == 1000.0
 
     def test_symbol_case_insensitive(self, manager, mock_client):
-        """Test that symbol validation is case-insensitive"""
+        #Test that symbol validation is case-insensitive
         mock_client.post.return_value = {
             "orderId": 555555555,
             "status": "FILLED",
@@ -440,7 +440,7 @@ class TestOrderManager:
         assert response["orderId"] == 555555555
 
     def test_order_with_all_optional_parameters(self, manager, mock_client):
-        """Test order placement with all parameters specified"""
+        #Test order placement with all parameters specified
         mock_client.post.return_value = {
             "orderId": 666666666,
             "status": "NEW",
@@ -462,7 +462,7 @@ class TestOrderManager:
     #  LOGGING VERIFICATION 
 
     def test_order_is_logged(self, manager, mock_client):
-        """Test that order placement is logged"""
+        #Test that order placement is logged
         mock_client.post.return_value = {
             "orderId": 777777777,
             "status": "FILLED",

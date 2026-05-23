@@ -1,16 +1,3 @@
-"""
-bot/client.py
-~~~~~~~~~~~~~
-Low-level HMAC-SHA256 signed REST client for the Binance Futures Testnet.
-
-Responsibilities
-----------------
-- Load credentials from environment / .env
-- Sign every authenticated request with HMAC-SHA256
-- Handle HTTP-level errors and wrap them in typed exceptions
-- Expose thin get() / post() helpers plus convenience endpoints
-"""
-
 from __future__ import annotations
 
 import hashlib
@@ -32,7 +19,7 @@ log = get_logger(__name__)
 #    Custom exceptions    
 
 class BinanceAPIError(Exception):
-    """Raised when the Binance API returns a non-2xx response or error code."""
+    Raised when the Binance API returns a non-2xx response or error code.
 
     def __init__(self, code: int, message: str) -> None:
         self.code = code
@@ -41,13 +28,13 @@ class BinanceAPIError(Exception):
 
 
 class NetworkError(Exception):
-    """Raised on connection timeouts or DNS failures."""
+    Raised on connection timeouts or DNS failures.
 
 
 # Client   
 
 class BinanceClient:
-    """
+    
     Authenticated httpx wrapper for Binance Futures USDT-M REST API.
 
     Usage
@@ -55,7 +42,7 @@ class BinanceClient:
     >>> client = BinanceClient()
     >>> client.ping()
     >>> info = client.get_exchange_info("BTCUSDT")
-    """
+    
 
     DEFAULT_BASE_URL = "https://testnet.binancefuture.com"
     TIMEOUT = 10.0  # seconds
@@ -93,7 +80,7 @@ class BinanceClient:
     # Signing          
 
     def _sign(self, params: dict) -> dict:
-        """Add timestamp + HMAC-SHA256 signature to *params* dict (in-place + return)."""
+        Add timestamp + HMAC-SHA256 signature to *params* dict (in-place + return).
         params["timestamp"] = int(time.time() * 1000)
         query_string = urllib.parse.urlencode(params)
         signature = hmac.new(
@@ -107,7 +94,7 @@ class BinanceClient:
     #  Low-level HTTP helpers                                                 
 
     def _handle_response(self, response: httpx.Response) -> Any:
-        """Parse JSON and raise BinanceAPIError on non-2xx or API error body."""
+        Parse JSON and raise BinanceAPIError on non-2xx or API error body.
         log.debug(
             "HTTP %s %s → %d | body=%s",
             response.request.method,
@@ -131,7 +118,7 @@ class BinanceClient:
         return data
 
     def get(self, endpoint: str, params: Optional[dict] = None, signed: bool = True) -> Any:
-        """Send a signed GET request."""
+        Send a signed GET request.
         params = params or {}
         if signed:
             self._sign(params)
@@ -145,7 +132,7 @@ class BinanceClient:
         return self._handle_response(resp)
 
     def post(self, endpoint: str, data: Optional[dict] = None, signed: bool = True) -> Any:
-        """Send a signed POST request."""
+        Send a signed POST request.
         data = data or {}
         if signed:
             self._sign(data)
@@ -161,7 +148,7 @@ class BinanceClient:
     #  Convenience endpoints                                                 ─
 
     def ping(self) -> bool:
-        """Return True if the exchange is reachable."""
+        Return True if the exchange is reachable.
         try:
             self._http.get("/fapi/v1/ping")
             log.debug("Ping successful")
@@ -171,16 +158,16 @@ class BinanceClient:
             return False
 
     def get_server_time(self) -> int:
-        """Return exchange server time in milliseconds."""
+        Return exchange server time in milliseconds.
         data = self.get("/fapi/v1/time", signed=False)
         return data["serverTime"]
 
     def get_exchange_info(self, symbol: str) -> dict:
-        """
+        
         Fetch symbol metadata including filters (LOT_SIZE, PRICE_FILTER, etc.).
 
         Returns the first matching symbol dict from exchangeInfo.
-        """
+        
         data = self.get("/fapi/v1/exchangeInfo", params={}, signed=False)
         for s in data.get("symbols", []):
             if s["symbol"] == symbol:
@@ -193,7 +180,7 @@ class BinanceClient:
 
 
     def close(self) -> None:
-        """Close the underlying httpx session."""
+        Close the underlying httpx session.
         self._http.close()
 
     # Context-manager support

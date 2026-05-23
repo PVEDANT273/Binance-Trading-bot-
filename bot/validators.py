@@ -1,13 +1,3 @@
-"""
-bot/validators.py
-~~~~~~~~~~~~~~~~~
-Input validation helpers for order parameters.
-
-All public functions raise `ValueError` with a human-readable message on
-failure, so the CLI / caller can display the error without importing
-exchange-specific types.
-"""
-
 from __future__ import annotations
 
 import math
@@ -21,14 +11,14 @@ VALID_ORDER_TYPES = {"MARKET", "LIMIT", "STOP_MARKET"}
 
 # Helpers  
 def _round_step(value: float, step: str) -> Decimal:
-    """Round *value* down to the precision implied by *step* string (e.g. '0.001')."""
+    Round *value* down to the precision implied by *step* string (e.g. '0.001').
     step_dec = Decimal(step)
     val_dec = Decimal(str(value))
     return (val_dec / step_dec).to_integral_value(rounding=ROUND_DOWN) * step_dec
 
 
 def _count_decimals(step: str) -> int:
-    """Return the number of decimal places in a step string."""
+    Return the number of decimal places in a step string.
     if "." in step:
         return len(step.rstrip("0").split(".")[1])
     return 0
@@ -37,14 +27,14 @@ def _count_decimals(step: str) -> int:
 #Public validators
 
 def validate_symbol(symbol: str) -> str:
-    """
+    
     Normalise and do a basic sanity check on the trading symbol.
 
     Rules:
       - Must be a non-empty string
       - Uppercased automatically
       - Must end with 'USDT' (USDT-M futures)
-    """
+    
     if not isinstance(symbol, str) or not symbol.strip():
         raise ValueError("Symbol must be a non-empty string (e.g. BTCUSDT).")
     symbol = symbol.strip().upper()
@@ -57,7 +47,7 @@ def validate_symbol(symbol: str) -> str:
 
 
 def validate_side(side: str) -> str:
-    """Validate and normalise order side (BUY/SELL)."""
+    Validate and normalise order side (BUY/SELL).
     if not isinstance(side, str):
         raise ValueError("Side must be a string.")
     side = side.strip().upper()
@@ -69,7 +59,7 @@ def validate_side(side: str) -> str:
 
 
 def validate_order_type(order_type: str) -> str:
-    """Validate and normalise order type."""
+    Validate and normalise order type.
     if not isinstance(order_type, str):
         raise ValueError("Order type must be a string.")
     order_type = order_type.strip().upper()
@@ -85,13 +75,13 @@ def validate_quantity(
     qty: float,
     symbol_info: Optional[dict] = None,
 ) -> Decimal:
-    """
+    
     Validate quantity against exchange lot-size rules.
 
     If *symbol_info* is provided (from /fapi/v1/exchangeInfo), the quantity
     is rounded to stepSize and checked against minQty / maxQty.
     Returns a Decimal rounded to the correct precision.
-    """
+    
     if qty is None:
         raise ValueError("Quantity is required.")
     try:
@@ -135,13 +125,13 @@ def validate_price(
     order_type: str,
     symbol_info: Optional[dict] = None,
 ) -> Optional[Decimal]:
-    """
+    
     Validate limit price.
 
     - Required when order_type is LIMIT.
     - Rounded to the exchange tickSize.
     - Returns None for MARKET orders.
-    """
+    
     if order_type == "MARKET":
         return None  # price is ignored for market orders
 
@@ -192,11 +182,11 @@ def validate_stop_price(
     order_type: str,
     symbol_info: Optional[dict] = None,
 ) -> Optional[Decimal]:
-    """
+    
     Validate stop trigger price.
 
     Required when order_type is STOP_MARKET.
-    """
+    
     if order_type != "STOP_MARKET":
         return None
 
@@ -226,7 +216,7 @@ def validate_stop_price(
 
 # Internal utility
 def _get_filter(symbol_info: dict, filter_type: str) -> Optional[dict]:
-    """Extract a specific filter dict from symbol_info['filters']."""
+    Extract a specific filter dict from symbol_info['filters'].
     for f in symbol_info.get("filters", []):
         if f.get("filterType") == filter_type:
             return f
